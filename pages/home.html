@@ -1,0 +1,1118 @@
+<style>
+	#mem_pool_rows tr td:first-child {
+		text-align: left;
+	}
+	.value {
+		color: #1B80E7;
+		font-weight: 600;
+		display: block;
+		float: right;
+	}
+</style>
+
+<div class="row">
+	<div class="col-sm-12 col-md-12">
+		<div class="panel panel-default" id="network-stats">
+		  <div class="panel-heading">
+			<h3 class="panel-title"><i class="fa fa-tasks fa-fw" aria-hidden="true"></i> Stats</h3>
+		  </div>
+		  <div class="panel-body">
+			<div class="row">
+
+				<div class="col-sm-6 col-md-3">
+					<ul class="list-group" style="margin-bottom: 0px;">
+
+						<li class="list-group-item d-flex justify-content-between align-items-center" data-toggle="tooltip" data-placement="top" data-original-title="Blockchain height, total amount of blocks starting from zero."><i class="fa fa-list-ol"></i> Height: <span id="networkHeight" class="value"></span></li>
+
+						<li class="list-group-item d-flex justify-content-between align-items-center" data-toggle="tooltip" data-placement="top" data-original-title="The number of transactions in the network (excluding coinbase, i.e. reward for mined blocks)."><i class="fa fa fa-exchange"></i> Transactions: <span id="networkTransactions" class="value"></span></li>
+
+						<li class="list-group-item d-flex justify-content-between align-items-center" data-toggle="tooltip" data-placement="top" data-original-title="Current Base Reward (for last mined block)."><i class="fa fa-certificate"></i> Reward: <span id="currentReward" class="value"></span></li>
+
+					</ul>
+				</div>
+				<div class="col-sm-6 col-md-3">
+					<ul class="list-group" style="margin-bottom: 0px;">
+
+						<li class="list-group-item d-flex justify-content-between align-items-center" data-toggle="tooltip" data-placement="top" data-original-title="Total Infinium supply in circulation."><i class="fa fa-money"></i> Supply: <span id="totalCoins" class="value"></span></li>
+
+						<li class="list-group-item d-flex justify-content-between align-items-center" data-toggle="tooltip" data-placement="top" data-original-title="Percent of already emitted coins related to Initial supply before Tail emission."><i class="fa fa-university" aria-hidden="true"></i> Emission: <span id="emissionPercent" class="value"></span></li>
+
+						<li class="list-group-item d-flex justify-content-between align-items-center" data-toggle="tooltip" data-placement="top" data-original-title="Minimum transaction fee."><i class="fa fa-money" aria-hidden="true"></i> Min. fee: <span id="minimumFee" class="value"></span></li>
+
+					</ul>
+				</div>
+				<div class="col-sm-6 col-md-3">
+					<ul class="list-group" style="margin-bottom: 0px;">
+
+						<li class="list-group-item d-flex justify-content-between align-items-center" data-toggle="tooltip" data-placement="top" data-original-title="Difficulty for next block. Ratio at which at the current hashing speed blocks will be mined with 30 seconds interval."><i class="fa fa-unlock-alt"></i> Next Difficulty: <span id="networkDifficulty" class="value"></span></li>
+
+						<li class="list-group-item d-flex justify-content-between align-items-center" data-toggle="tooltip" data-placement="top" data-original-title="Average difficulty by last 30 blocks."><i class="fa fa-lock"></i> Average Difficulty: <span id="avgDifficulty" class="value"></span></li>
+
+						<li class="list-group-item d-flex justify-content-between align-items-center" data-toggle="tooltip" data-placement="top" data-original-title="Current estimated network hash rate. Calculated by current difficulty."><i class="fa fa-tachometer"></i> Hash Rate: <span id="networkHashrate" class="value"></span></li>
+
+					</ul>
+				</div>
+				<div class="col-sm-6 col-md-3">
+					<ul class="list-group" style="margin-bottom: 0px;">
+
+						<li class="list-group-item d-flex justify-content-between align-items-center" data-toggle="tooltip" data-placement="top" data-original-title="Average estimated network hash rate. Calculated by average difficulty."><i class="fa fa-tachometer"></i> Avg. Hash Rate: <span id="avgHashrate" class="value"></span></li>
+
+						<li class="list-group-item d-flex justify-content-between align-items-center" data-toggle="tooltip" data-placement="top" data-original-title="Estimated block solve time at estimated network speed and current difficulty."><i class="fa fa-clock-o" aria-hidden="true"></i> Est. solve time: <span id="blockSolveTime" class="value"></span></li>
+
+						<li class="list-group-item d-flex justify-content-between align-items-center" data-toggle="tooltip" data-placement="top" data-original-title="Average solve time for the recent blocks listed below."><i class="fa fa-clock-o" aria-hidden="true"></i> Avg. solve time: <span id="avgSolveTime" class="value"></span></li>
+
+					</ul>
+				</div>
+
+
+			</div>
+		  </div>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-md-12">
+		<div class="panel panel-default">
+		  <div class="panel-heading">
+
+			<h3 class="panel-title"><i class="fa fa-area-chart" aria-hidden="true"></i> Charts
+
+			<span class="text-default" data-toggle="tooltip" data-placement="right" data-original-title="Difficulty based on last blocks from the list below. Block size, transactions count. Load more blocks to enlarge chart range."><i class="fa fa-question-circle"></i></span>
+			</h3>
+
+		  </div>
+
+            <div class="panel-body chart-wrapper">
+              <canvas id="difficultyChart" height="210"></canvas>
+            </div>
+
+		</div>
+	</div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+
+	<h3 class="panel-title"><i class="fa fa-exchange fa-fw" aria-hidden="true"></i> Transaction pool
+	<span class="text-default" data-toggle="tooltip" data-placement="right" data-original-title="Recent transactions waiting to be included into a block. Once it happens a transaction gets into the blockchain and becomes confirmed."><i class="fa fa-question-circle"></i></span>
+    </h3>
+
+  </div>
+  <div class="panel-body">
+
+		<div class="row">
+		  <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+			<div class="panel panel-default tab-panel">
+			  <div class="panel-body">
+
+				  <ul class="nav nav-pills nav-stacked">
+					<li data-toggle="tooltip" data-placement="bottom" data-original-title="">Count: <span id="mempool_count" class="value"></span></li>
+				  </ul>
+
+			  </div>
+			</div>
+		  </div>
+		  <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+			<div class="panel panel-default tab-panel">
+			  <div class="panel-body">
+
+				  <ul class="nav nav-pills nav-stacked">
+					<li data-toggle="tooltip" data-placement="bottom" data-original-title="">Total Amount Out: <span id="mempool_amount" class="value"></span></li>
+				  </ul>
+
+			  </div>
+			</div>
+		  </div>
+		  <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+			<div class="panel panel-default tab-panel">
+			  <div class="panel-body">
+
+				  <ul class="nav nav-pills nav-stacked">
+					<li href="javascript:void(0);" data-toggle="tooltip" data-placement="bottom" data-original-title="">Total Fees: <span id="mempool_fees" class="value"></span></a></li>
+				  </ul>
+
+			  </div>
+			</div>
+		  </div>
+		  <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+		    <div class="panel panel-default tab-panel">
+		      <div class="panel-body">
+
+			      <ul class="nav nav-pills nav-stacked">
+				    <li data-toggle="tooltip" data-placement="bottom" data-original-title="">Total Size: <span id="mempool_sizes" class="value"></span></li>
+			      </ul>
+
+		      </div>
+			</div>
+		  </div>
+		</div>
+
+
+		<div class="table-responsive">
+			<table class="table table-hover" id="mem_pool_table">
+				<thead>
+				<tr>
+					<th width="30%"><i class="fa fa-clock-o"></i> Date &amp; time</th>
+					<th width="15%"><i class="fa fa-money"></i> Amount out</th>
+					<th width="10%"><i class="fa fa-tag"></i> Fee</th>
+					<th width="10%"><i class="fa fa-archive"></i> Size</th>
+					<th width="40%"><i class="fa fa-paw"></i> Hash</th>
+				</tr>
+				</thead>
+				<tbody id="mem_pool_rows">
+
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+	<h3 class="panel-title"><i class="fa fa-chain fa-fw" aria-hidden="true"></i> Recent blocks</h3>
+  </div>
+  <div class="panel-body">
+	<div class="row">
+		<div class="col-sm-8 col-md-6 col-lg-5">
+			<div class="input-group">
+			
+			</div>
+		</div>
+	</div>
+
+	<div class="table-responsive">
+		<table class="table table-hover">
+			<thead>
+			<tr>
+				<th><i class="fa fa-bars"></i> Height</th>
+				<th><i class="fa fa-clock-o"></i> Date &amp; time</th>
+				<th><i class="fa fa-archive"></i> Size</th>
+				<th><i class="fa fa-paw"></i> Block Hash</th>
+				<th><i class="fa fa-unlock-alt"></i> Difficulty</th>
+				<th><i class="fa fa fa-exchange"></i> Txs</th>
+			</tr>
+			</thead>
+			<tbody id="blocks_rows">
+
+			</tbody>
+		</table>
+	</div>
+
+	<p class="text-center">
+		<button type="button" class="btn btn-default" id="loadMoreBlocks">Load More</button>
+	</p>
+
+  </div>
+</div>
+<script>
+var block,
+	Difficulties = [],
+    HashRate = [],
+	MinFees = [],
+	Blocks = [],
+	Rewards = [],
+	Txses = [],
+	Sizes = [],
+	Timestamps = [],
+	time_stamps = [],
+	Solvetimes = [],
+	diffChart,
+	refresh = true;
+
+currentPage = {
+        destroy: function(){
+            if (xhrGetBlocks) xhrGetBlocks.abort();
+        },
+        init: function(){
+			$.when(
+				renderInitialBlocks()
+			).then(function() {
+				setTimeout(function(){
+					$.when(
+						displayCharts()
+					).then(function() {
+						setTimeout(function(){
+							refreshChart();
+						}, 100)
+					});
+				}, 500)
+			});
+        },
+        update: function(){
+			renderLastBlock();
+            updateText('networkHeight', lastStats.result.top_known_block_height.toString());
+            //updateText('networkTransactions', sync_blocks.result.blocks[0].header.already_generated_transactions.toString());
+            updateText('networkHashrate', getReadableHashRateString(lastStats.result.top_block_difficulty / blockTargetInterval));
+            updateText('networkDifficulty', getReadableDifficultyString(lastStats.result.top_block_difficulty, 2).toString());
+			updateText('minimumFee', getReadableCoins(lastStats.result.recommended_fee_per_byte,6));
+			$("time.timeago").timeago();
+			getPoolTransactions();
+			var currHeight = $('#blocks_rows').children().first().data('height');
+			if(refresh){
+				$.when(
+					renderInitialBlocks()
+				).then(function() {
+					setTimeout(function(){
+						refreshChart();
+					}, 100)
+				});
+			}
+			if((currHeight + 31) < lastStats.result.last_known_block_index){
+				$('#next-page').removeClass('disabled');
+			}
+		}
+};
+
+function renderLastBlock(){
+$.ajax({
+    url: api + '/json_rpc',
+    method: "POST",
+    data: JSON.stringify({
+          jsonrpc:"2.0",
+          id: "test",
+          method:"getlastblockheader",
+          params: {
+
+                }
+    }),
+    dataType: 'json',
+    cache: 'false',
+    success: function(data){
+		last_block_hash = data.result.block_header.hash;
+
+        updateText('totalCoins', getReadableCoins(data.result.block_header.already_generated_coins*data.result.block_header.already_generated_coins_multiply_by,2));
+        updateText('emissionPercent', "infinite");
+        updateText('currentReward', getReadableCoins(data.result.block_header.base_reward,4));
+
+        updateText('networkTransactions', data.result.block_header.already_generated_transactions.toString());
+
+        block = data.block_header;
+
+		/*$.ajax({
+			url: api + '/json_rpc',
+			method: "POST",
+			data: JSON.stringify({
+				jsonrpc:"2.0",
+				id: "test",
+				method:"f_block_json",
+				params: {
+				    hash: last_block_hash
+				}
+			}),
+			dataType: 'json',
+			cache: 'false',
+			success: function(data){
+			block = data.result.block;
+				updateText('totalCoins', getReadableCoins(block.alreadyGeneratedCoins,2));
+				updateText('emissionPercent', (block.alreadyGeneratedCoins / 10000000000000000000 * 100).toFixed(4) + "%");
+				updateText('currentReward', getReadableCoins(block.baseReward,4));
+			}
+		});*/
+    }
+});
+}
+
+var load_count = 10;
+var xhrGetBlocks;
+
+    function loadMore()
+    {
+        if (xhrGetBlocks) xhrGetBlocks.abort();
+        xhrGetBlocks = $.ajax({
+            url: api + '/json_rpc',
+            method: "POST",
+            data: JSON.stringify({
+                jsonrpc:"2.0",
+                id: "test",
+                method:"getblockheaderbyheight",
+                params: {
+                    height: $('#blocks_rows').children().last().data('height')
+                }
+            }),
+            dataType: 'json',
+            cache: 'false',
+            success: function(data){
+				$.when(
+					 renderBlocks(data.result.block_header)
+				).then(function() {
+                    if(load_count>0){
+                        load_count--;
+                        loadMore();
+                    }else{
+                        load_count = 10;
+                        setTimeout(function(){
+						loadMoreChart();
+                        refreshChart();
+                        }, 100)
+                    }
+				});
+            }
+    });
+    }
+
+$('#loadMoreBlocks').click(function(){
+    loadMore();
+});
+
+$('#prev-page').click(function(e){
+	refresh = false;
+    if (xhrGetBlocks) xhrGetBlocks.abort();
+	var currHeight = $('#blocks_rows').children().first().data('height');
+	var openHeight = (currHeight - 31 < 0) ? 0 : currHeight - 31;
+
+	xhrGetBlocks = $.ajax({
+            url: api + '/json_rpc',
+            method: "POST",
+            data: JSON.stringify({
+                jsonrpc:"2.0",
+                id: "test",
+                method:"getblockheaderbyheight",
+                params: {
+                    height: openHeight
+                }
+            }),
+            dataType: 'json',
+            cache: 'false',
+            success: function(data){
+				$('#blocks_rows').children().remove();
+				$.when(
+					renderBlocks(data.result.block_header)
+				).then(function() {
+					setTimeout(function(){
+						refreshChart();
+					}, 100)
+				});
+            }
+    });
+	e.preventDefault();
+
+	if((currHeight + 31) > lastStats.result.last_known_block_index){
+		$('#next-page').removeClass('disabled');
+	}
+	if((currHeight - 61) < 0){
+		$('#prev-page').addClass('disabled');
+	}
+});
+
+$('#next-page').click(function(e){
+	refresh = false;
+    if (xhrGetBlocks) xhrGetBlocks.abort();
+	var currHeight = $('#blocks_rows').children().first().data('height');
+	var openHeight = (currHeight + 31 > lastStats.result.last_known_block_index) ? (lastStats.result.last_known_block_index) : currHeight + 31;
+
+	xhrGetBlocks = $.ajax({
+            url: api + '/json_rpc',
+            method: "POST",
+            data: JSON.stringify({
+                jsonrpc:"2.0",
+                id: "test",
+                method:"getblockheaderbyheight",
+                params: {
+                    height: openHeight
+                }
+            }),
+            dataType: 'json',
+            cache: 'false',
+            success: function(data){
+				$('#blocks_rows').children().remove();
+				$.when(
+					renderBlocks(data.result.block_header)
+				).then(function() {
+					setTimeout(function(){
+						refreshChart();
+					}, 100)
+				});
+            }
+    });
+	e.preventDefault();
+
+	if((currHeight + 61) > lastStats.result.last_known_block_index){
+		$('#next-page').addClass('disabled');
+		refresh = true;
+	}
+
+		$('#prev-page').removeClass('disabled');
+
+});
+
+$('#goto-height-go').click(function() {
+	var height = document.getElementById('goto-height').value;
+	var newUrl = "/?height="+height;
+	window.location = newUrl;
+});
+
+$('#goto-height').keyup(function(e){
+        if(e.keyCode === 13)
+            $('#goto-height-go').click();
+});
+
+    var count = 30;
+    var lastHeigh = 0;
+
+    function renderInitialBlocks(){
+        if (xhrGetBlocks) xhrGetBlocks.abort();
+
+		var loadHeight;
+
+		if (urlParam('height'))
+            {
+				loadHeight = parseInt(urlParam('height'));
+                console.log("urlParam loadHeight ")
+            }
+            else
+                {
+				//loadHeight = lastStats.result.top_known_block_height - 1;
+                loadHeight = lastStats.result.top_known_block_height - count;
+                }
+
+		if((loadHeight - 31) < 0){
+			$('#prev-page').addClass('disabled');
+			$('#next-page').removeClass('disabled');
+		}
+
+        if(lastHeigh != 0)
+            loadHeight = lastHeigh + 1;
+
+			xhrGetBlocks = $.ajax({
+				url: api + '/json_rpc',
+				method: "POST",
+				data: JSON.stringify({
+					jsonrpc:"2.0",
+					id: "test",
+					method:"getblockheaderbyheight",
+					params: {
+						height: loadHeight
+					}
+				}),
+				dataType: 'json',
+				cache: 'false',
+				success: function(data){
+                    if(data.result.block_header)
+					   renderBlocks(data.result.block_header);
+                    if(count >0)
+                    {
+                        count--;
+                        renderInitialBlocks();
+                    }
+                    else
+                    {
+                        refreshChart();
+                        lastHeigh = loadHeight;
+                        if(lastHeigh<lastStats.result.top_known_block_height &&
+                           (lastStats.result.top_known_block_height - lastHeigh) < 60 )
+                           renderInitialBlocks();
+                    }
+				}
+			});
+    };
+
+    function getBlockRowElement(block, jsonString){
+
+        var row = document.createElement('tr');
+        row.setAttribute('data-json', jsonString);
+        row.setAttribute('data-height', block.height);
+        row.setAttribute('id', 'blockRow' + block.height);
+        row.setAttribute('title', block.hash);
+		var dateTime = new Date(block.timestamp * 1000).toISOString();
+        //var dateTime = block.timestamp;
+		row.setAttribute('data-dt', dateTime);
+        row.setAttribute('data-timestamp', block.timestamp);
+		row.setAttribute('data-min-fee', parseFloat(getReadableCoins(block.total_fee_amount,6,false)));
+
+        var columns =
+            '<td>' + block.height + '</td>' +
+            '<td class="date-time">' + formatDate(block.timestamp) + ' (<time class="timeago" datetime="'+dateTime+'"></time>)</td>' +
+			'<td>' + formatBytes(parseInt(block.block_size)) + '</td>' +
+			'<td>' + formatBlockLink(block.hash) + '</td>' +
+            '<td class="blk-diff">' + block.difficulty + '</td>' +
+            '<td>' + block.already_generated_transactions + '</td>';
+
+		Difficulties.push(parseInt(block.difficulty));
+        HashRate.push(parseInt(block.difficulty)/*/blockTargetInterval/1000/1000*/);
+		MinFees.push(parseFloat(getReadableCoins(block.total_fee_amount,6,false)));
+		Blocks.push(parseInt(block.height));
+
+		Txses.push(parseInt(block.already_generated_transactions));
+		Sizes.push(parseInt(block.block_size));
+		Timestamps.push(dateTime);
+		time_stamps.push(block.timestamp);
+
+        row.innerHTML = columns;
+
+        return row;
+    }
+
+    function renderBlocks(blocksResults){
+
+        var $blocksRows = $('#blocks_rows');
+
+        //for (var i = 0; i < 1; i ++){
+
+            var block = blocksResults;
+
+            var blockJson = JSON.stringify(block);
+
+            var existingRow = document.getElementById('blockRow' + block.height);
+
+            if (existingRow && existingRow.getAttribute('data-json') !== blockJson){
+                $(existingRow).replaceWith(getBlockRowElement(block, blockJson));
+            }
+            else if (!existingRow){
+
+                var blockElement = getBlockRowElement(block, blockJson);
+
+                var inserted = false;
+                var rows = $blocksRows.children().get();
+                for (var f = 0; f < rows.length; f++) {
+                    var bHeight = parseInt(rows[f].getAttribute('data-height'));
+                    if (bHeight < block.height){
+                        inserted = true;
+                        $(rows[f]).before(blockElement);
+                        break;
+                    }
+                }
+                if (!inserted) {
+                    $blocksRows.append(blockElement);
+				}
+            }
+        //}//for
+
+		$("time.timeago").timeago();
+		calcAvgHashRate();
+		calcAvgSolveTime();
+    }
+
+	function calcAvgHashRate(){
+		var sum = Difficulties.reduce(add, 0);
+		function add(a, b) {
+			return a + b;
+		}
+		var avgDiff = Math.round(sum / Difficulties.length);
+		var avgHashRate = avgDiff / blockTargetInterval;
+
+		updateText('avgDifficulty', getReadableDifficultyString(avgDiff, 2).toString());
+		updateText('avgHashrate', getReadableHashRateString(avgDiff / blockTargetInterval));
+        updateText('blockSolveTime', getReadableTime(lastStats.result.top_block_difficulty / avgHashRate));
+
+	}
+
+	function calcAvgSolveTime(){
+		ts = time_stamps.concat([]);
+		ts.sort();
+		var avg_solve_time = 0;
+		var solveTime = 0;
+		for (var i = 1; i < ts.length; i++){
+			solveTime += ts[i] - ts[i - 1];
+		}
+		avg_solve_time = solveTime / (ts.length - 1);
+		updateText('avgSolveTime', getReadableTime(avg_solve_time));
+	}
+
+// MemPool Transactions
+function getPoolTransactions(){
+  var xhrGetPool = $.ajax({
+	url: api + '/json_rpc',
+	method: "POST",
+	data: JSON.stringify({
+		jsonrpc: "2.0",
+		id: "",
+		method: "sync_mem_pool",
+		params: {}
+	}),
+	dataType: 'json',
+	cache: 'false',
+	success: function(newdata) {
+		if(typeof newdata.result !== "undefined") {
+			var data = newdata.result.added_transactions;
+            var status = newdata.result.status;
+			var totalAmount = 0;
+			var totalFee = 0;
+			var totalSize = 0;
+			var txcount = 0;
+            var mempool_tx_vout_amount = 0;
+			var txsRows = document.getElementById('mem_pool_rows');
+			  if (txsRows) {
+				while (txsRows.firstChild) {
+				  txsRows.removeChild(txsRows.firstChild);
+				}
+			  }
+			for (var i = 0; i < data.length; i ++){
+				var tx = data[i];
+
+                /*for(var j=0; j<newdata.result.added_raw_transactions[i].vout.length; j++){
+                    mempool_tx_vout_amount = mempool_tx_vout_amount + newdata.result.added_raw_transactions[i].vout[j].amount;
+				}*/
+				mempool_tx_vout_amount = tx.amount;
+				
+				totalAmount = totalAmount + mempool_tx_vout_amount;
+				var row = document.createElement('tr');
+				var columns =
+					//'<td>' + formatDate(status.top_block_timestamp) + ' (<span class="mtx-ago"></span>)' + '</td>' +
+                    '<td>' + formatDate(tx.timestamp) + ' (<span class="mtx-ago"></span>)' + '</td>' +
+					'<td>' + getReadableCoins(mempool_tx_vout_amount, 4, true) + '</td>' +
+					'<td>' + getReadableCoins(tx.fee, 4, true) + '</td>' +
+					'<td>' + formatBytes(parseInt(tx.binary_size)) + '</td>' +
+					'<td>' + formatPaymentLink(tx.hash) + '</td>';
+                mempool_tx_vout_amount = 0;
+				row.innerHTML = columns;
+				$(txsRows).append(row);
+				//$(row).find('.mtx-ago').timeago('update', new Date(status.top_block_timestamp * 1000).toISOString());
+                $(row).find('.mtx-ago').timeago('update', new Date(tx.timestamp * 1000).toISOString());
+
+				txcount = txcount + 1;
+				//totalAmount = tx.amount + totalAmount;
+				totalFee = totalFee + tx.fee;
+				totalSize = totalSize + tx.binary_size;
+
+			}
+			updateText('mempool_count', txcount);
+			updateText('mempool_amount', getReadableCoins(totalAmount,4));
+			updateText('mempool_fees', getReadableCoins(totalFee, 8));
+			updateText('mempool_sizes', formatBytes(parseInt(totalSize)));
+		}
+	}
+  });
+}
+
+// Difficulty chart
+function displayCharts() {
+	var ctx = document.getElementById("difficultyChart");
+	var chartData = {
+			labels: [].concat(Blocks),
+			//labels: [].concat(formatDate(Timestamps)).reverse(),
+			datasets: [
+			  {
+				data: [].concat(formatDate(Timestamps)),
+				yAxisID: "Time",
+				label: "Time",
+				backgroundColor: "rgba(0,0,0,0) ",
+				borderColor: 'rgba(0,0,0,0)',
+				borderWidth: 0,
+				pointBorderWidth: 0,
+				pointRadius: 0,
+				pointHoverRadius: 0,
+				pointHitRadius: 0,
+				display: false,
+				type: 'line'
+			  },{
+				data: [].concat(HashRate),
+				yAxisID: 'Difficulty',//"Hash Rate",
+				label: 'Difficulty',//"Hash Rate",
+				backgroundColor: "rgba(16,40,63,0.1) ",
+				borderColor: '#2FA4E7',
+				borderWidth: 2,
+				pointColor : "#2FA4E7",
+				pointBorderColor : "#2FA4E7",
+				pointHighlightFill: "#2FA4E7",
+				pointBackgroundColor: "#2FA4E7",
+				pointBorderWidth: 2,
+				pointRadius: 1,
+				pointHoverRadius: 3,
+				pointHitRadius: 20,
+				type: 'line'
+			  },{
+				data: [].concat(MinFees),
+				yAxisID: "MinFee",
+				label: "Tx fee",
+				backgroundColor: "rgba(237,28,36,0) ",
+				borderColor: '#ED1C24',
+				borderWidth: 1,
+				pointColor : "#ED1C24",
+				pointBorderColor : "#ED1C24",
+				pointHighlightFill: "#ED1C24",
+				pointBackgroundColor: "#ED1C24",
+				pointBorderWidth: 2,
+				pointRadius: 1,
+				pointHoverRadius: 3,
+				pointHitRadius: 20,
+				type: 'line'
+			  },{
+				data: [].concat(Txses),
+				yAxisID: "Transactions",
+				label: "Transactions",
+				backgroundColor: "rgba(0,0,0,0) ",
+				borderColor: 'rgba(0,0,0,0)',
+				borderWidth: 0,
+				type: 'line'
+			  },{
+				data: [].concat(Sizes),
+				yAxisID: "Sizes",
+				label: "Size",
+				backgroundColor: "rgba(65,172,0,0.4) ",
+				borderColor: '#99D9EA',
+				borderWidth: 0,
+				type: 'bar'
+			  },{
+				data: [].concat(Blocks),
+				yAxisID: "Height",
+				label: "Height",
+				backgroundColor: "rgba(0,0,0,0) ",
+				borderColor: 'rgba(0,0,0,0)',
+				borderWidth: 0,
+				pointBorderWidth: 0,
+				pointRadius: 0,
+				pointHoverRadius: 0,
+				pointHitRadius: 0,
+				display: false,
+				type: 'line'
+			  }
+			]
+		};
+
+	var options = {
+			responsive: true,
+			maintainAspectRatio: false,
+			elements: {
+				line: {
+					tension: 0
+				}
+			},
+			title: {
+				display: false
+			},
+			legend: {
+				display: false
+			},
+			scales: {
+			  yAxes: [{
+				id: 'Time',
+				type: 'linear',
+				position: 'left',
+				scaleLabel: {
+					display: false,
+					labelString: 'Time'
+				},
+				gridLines: {
+					display:false
+				},
+				ticks: {
+					fontSize: 9,
+					display:false
+				},
+				display: true
+			  },{
+				id: 'Difficulty',//'Hash Rate',
+				type: 'linear',
+
+				position: 'left',
+				scaleLabel: {
+					display: true,
+					labelString: 'Difficulty'//'Hash Rate'
+				},
+				gridLines: {
+					display:true
+				},
+				ticks: {
+					fontSize: 9,
+					display:true/*,
+                    userCallback: function(value, index, values) {
+                    // Convert the number to a string and splite the string every 3 charaters from the end
+                    value = value.toString();
+                    value = value.split(/(?=(?:...)*$)/);
+                    // Convert the array to a string and format the output
+                    value = value.join('.');
+                    return value + " MHs";
+                    }*/
+				},
+				display: true
+			  },{
+				id: 'Transactions',
+				type: 'linear',
+				position: 'right',
+				scaleLabel: {
+					display: true,
+					labelString: 'Transactions'
+				},
+				gridLines: {
+					display:false
+				},
+				ticks: {
+					fontSize: 9,
+					display:true
+				},
+				display: false
+			  },{
+				id: 'Sizes',
+				type: 'linear',
+				position: 'right',
+				barThickness: 10,
+				scaleLabel: {
+					display: true,
+					labelString: 'Size'
+				},
+				gridLines: {
+					display:false
+				},
+				ticks: {
+					fontSize: 9,
+					display:true
+				},
+				display: true
+			  },{
+				id: 'MinFee',
+				type: 'linear',
+				position: 'right',
+				scaleLabel: {
+					display: true,
+					labelString: 'Tx Fee'
+				},
+				gridLines: {
+					display:false
+				},
+				ticks: {
+					fontSize: 9,
+					display:true,
+					suggestedMin: 0.001,
+					suggestedMax: 0.01
+				},
+				display: true
+			  },{
+				id: 'Height',
+				type: 'linear',
+				position: 'right',
+				scaleLabel: {
+					display: true,
+					labelString: 'Height'
+				},
+				gridLines: {
+					display:false
+				},
+				ticks: {
+					fontSize: 9,
+					display:true,
+					suggestedMin: 0.001,
+					suggestedMax: 0.01
+				},
+				display: false
+			  }
+
+			  ],
+			  xAxes: [{
+
+
+                distribution: 'series',
+				categoryPercentage: 0,
+				barPercentage: 1,
+				categorySpacing: 0,
+				barThickness: 10,
+
+				/*time: {
+                    parser: false,
+					unit: 'minute',
+					unitStepSize: 60,
+					round: 'second',
+					displayFormats: {
+                                        'millisecond': 'SSS [ms]',
+                                        'second': 'HH:mm:ss', // 11:20:01 AM
+                                        'minute': 'HH:mm', // 11:20:01 AM
+                                        'hour': 'HH:mm', // Sept 4, 5PM
+                                        'day': 'MMM Do', // Sep 4 2015
+                                        'week': 'll', // Week 46, or maybe "[W]WW - YYYY" ?
+                                        'month': 'MMM YYYY', // Sept 2015
+                                        'quarter': '[Q]Q - YYYY', // Q3
+                                        'year': 'YYYY', // 2017
+                                    },
+				},*/
+				gridLines: {
+					display:true
+				},
+                scaleLabel: {
+					display: true,
+					labelString: 'Height',
+                    fontColor: "#CCC",
+                    fontSize: 9
+				},
+				ticks: {
+					fontSize: 8,
+					fontColor: "#CCC",
+					autoSkip: true,
+					//maxRotation: 90,
+					//minRotation: 90
+					display:true,
+                    autoSkipPadding: 1
+				}
+				//display: false
+			  }]
+			},
+			tooltips: {
+				mode: 'index',
+				intersect: true,
+				//displayColors: false,
+				callbacks: {
+					title: function(tooltipItem, data) {
+						var height	= data.datasets[3].data[tooltipItem[0].index];
+						//var time = new Date(data.labels[tooltipItem[0].index]).toLocaleString();
+                        var time = new Date(data.datasets[0].data[tooltipItem[0].index]).toLocaleString();
+						//return 'Block: ' + height + ' - ' + time + '';
+						return time + '';
+                        //return time;
+					}/*,
+					label: function(tooltipItem, data) {
+						var diff		= data.datasets[0].data[tooltipItem.index];
+						var txcount	= data.datasets[1].data[tooltipItem.index];
+						var size		= data.datasets[2].data[tooltipItem.index];
+
+						var diff_swatch_color = data.datasets[0].borderColor;
+
+						console.log(diff_swatch_color);
+
+						var diff_swatch = '<span style="color="'+ diff_swatch_color +'">&bullet;</span>';
+
+						var multistringText = [];
+
+						var str1 = diff_swatch + 'Difficulty: ' + diff + '';
+						var str2 = 'Size: ' + size + '';
+						var str3 = 'Transactions: ' + txcount + '';
+
+						multistringText.push(str1);
+						multistringText.push(str2);
+						multistringText.push(str3);
+
+						return multistringText;
+					}*/
+				}
+			  }
+		};
+
+	diffChart = new Chart(ctx,{
+    type: 'bar',
+    data: chartData,
+    options: options
+	});
+}
+
+function mysort(t){
+    if(!t || !t.length || t.length ==0)
+        return[[],[]];
+	const max = Number.POSITIVE_INFINITY;
+	const min = Number.NEGATIVE_INFINITY;
+
+	var min_value = max;
+	var max_value = min;
+	var s = [];
+	var index = [];
+
+	for(var j in t){
+		for(var i in t){
+			if(parseInt(t[i])>max_value && parseInt(t[i])<min_value)
+				max_value = parseInt(t[i]);
+		}
+
+		for(var repeted in t){
+			if(max_value == parseInt(t[repeted])){
+				s.push(max_value);
+				index.push(parseInt(repeted));
+			}
+		}
+		min_value = max_value;
+		max_value = min;
+	}
+	if(t.length != s.length)
+		s.splice(t.length,s.length-t.length);
+	return [s,index];
+}
+
+function refreshChart() {
+	var brows   = $('#blocks_rows').children(),
+		labels  = [],
+		diffs   = [],
+		sizes   = [],
+		times   = [],
+		heights = [],
+		txsnr   = [];
+		mfees   = [];
+		for (var i = 0; i < brows.length; i++) {
+			var row = $(brows[i]);
+			var label = row.data("json").height;
+			var diff  = row.data("json").difficulty/*/blockTargetInterval/1000/1000*/;
+			var txses = row.data("json").already_generated_transactions;
+			var size  = row.data("json").block_size;
+			//var time  = row.attr('data-dt');
+            var time  = row.attr('data-timestamp');
+			var mfee  = row.attr('data-min-fee');
+
+				labels.push(label);
+				diffs.push(diff);
+
+				txsnr.push(txses);
+
+				sizes.push(size);
+				times.push(time);
+				mfees.push(mfee);
+		}
+
+//=================================================================================================
+    var order = mysort(labels)[1];
+
+    order = order.reverse();
+
+    var _labels = [];
+    var _diffs = [];
+    var _mfees = [];
+    var _txsnr = [];
+    var _sizes = [];
+    var _times = [];
+
+    for (var i in order){
+        var dateTime = new Date( times[parseInt(order[i])] * 1000).toISOString();
+        _times.push(dateTime);
+		_labels.push(labels[parseInt(order[i])]);
+        _diffs.push(diffs[parseInt(order[i])]);
+        _mfees.push(mfees[parseInt(order[i])]);
+        _txsnr.push(txsnr[parseInt(order[i])]);
+        _sizes.push(sizes[parseInt(order[i])]);
+    }
+
+    diffChart.data.labels = _labels;//_times.reverse();
+    diffChart.data.datasets[0].data = _times;//_labels.reverse();
+    diffChart.data.datasets[1].data = _diffs;
+    diffChart.data.datasets[2].data = _mfees;
+    diffChart.data.datasets[3].data = _txsnr;
+    diffChart.data.datasets[4].data = _sizes;
+    diffChart.data.datasets[5].data = _labels;
+//=================================================================================================
+
+    diffChart.update();
+}
+
+function loadMoreChart() {
+	diffChart.data.labels = [].concat(Blocks);
+	//diffChart.data.labels = [].concat(Timestamps).reverse();
+	diffChart.data.datasets[0].data = [].concat(Timestamps);//[].concat(Blocks).reverse();
+	diffChart.data.datasets[1].data = [].concat(HashRate);
+	diffChart.data.datasets[2].data = [].concat(MinFees);
+	diffChart.data.datasets[3].data = [].concat(Txses);
+	diffChart.data.datasets[4].data = [].concat(Sizes);
+    diffChart.data.datasets[5].data = [].concat(Blocks);
+
+	diffChart.update();
+}
+
+$(function() {
+    $('[data-toggle="tooltip"]').tooltip();
+});
+
+function getReadableTime(seconds){
+
+        var units = [ [60, 's.'], [60, 'min.'], [24, 'h.'],
+            [7, 'd.'], [4, 'w.'], [12, 'ĐĽ.'], [1, 'y.'] ];
+
+        function formatAmounts(amount, unit){
+            var rounded = Math.round(amount);
+            return '' + rounded + ' ' + unit + (rounded > 1 ? '' : '');
+        }
+
+        var amount = seconds;
+        for (var i = 0; i < units.length; i++){
+            if (amount < units[i][0])
+                return formatAmounts(amount, units[i][1]);
+            amount = amount / units[i][0];
+        }
+        return formatAmounts(amount,  units[units.length - 1][1]);
+}
+
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
