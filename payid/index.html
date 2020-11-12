@@ -139,7 +139,7 @@
     }
 
     function formatBlockLink(hash){
-        return '<a href="' + getBlockchainUrl(hash) + '" target="_blank">' + hash + '</a>';
+        return '<a href="' + getBlockchainUrl(hash) + '">' + hash + '</a>';
     }
 
     function getReadableCoins(coins, digits, withoutSymbol){
@@ -157,7 +157,7 @@
 	}
 
 	function formatPaymentLink(hash){
-        return '<a href="' + getTransactionUrl(hash) + '" target="_blank">' + hash + '</a>';
+        return '<a href="' + getTransactionUrl(hash) + '">' + hash + '</a>';
     }
 
     function pulseLiveUpdate(){

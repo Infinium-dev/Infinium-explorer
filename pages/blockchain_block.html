@@ -106,7 +106,7 @@
                 //updateText('block.transactions', block.transaction_binary_sizes.length);
 				renderTransactions(block);
 
-				makePrevBlockLink(block.header.prev_hash);
+				makePrevBlockLink(block.header.previous_block_hash);
 
 				$.ajax({
 					url: api + '/json_rpc',
@@ -116,7 +116,7 @@
 					id: "test",
 					method: "getblockheaderbyheight",
 					params: {
-						height: (block.header.height + 1)
+						height: (block.header.height + 2)
 					}
 					}),
 					dataType: 'json',
