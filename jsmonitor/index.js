@@ -19,7 +19,6 @@ var nodesStat =
         ["http://m2pool.eu:27855/"],
         ["http://8.210.48.142:27855/"],
         ["http://135.181.62.60:27855/"],
-        ["http://minerspool.sytes.net/"],
         ["http://radioactive.myqnapcloud.com:27855/"]
     ];
 
@@ -86,16 +85,25 @@ function Asemble_Api_Resonse(){
     for (var i = 0; i < total_node_number; i++){
         var json_data;
         console.log(node_status_buffer[i]);
-        json_data = JSON.stringify({
-            is_available: true,
-            node_ip: nodesStat[i],
-            height: node_status_buffer[i].top_block_height,
-            top_block_hash: node_status_buffer[i].top_block_hash,
-            start_time: node_statistics_buffer[i].start_time,
-            version: node_statistics_buffer[i].version
-        });
-        api_response[i] = json_data;
+        if(node_status_buffer[i])
+        {
+            json_data = JSON.stringify({
+                is_available: true,
+                node_ip: nodesStat[i],
+                height: node_status_buffer[i].top_block_height,
+                top_block_hash: node_status_buffer[i].top_block_hash,
+                start_time: node_statistics_buffer[i].start_time,
+                version: node_statistics_buffer[i].version
+            });
+            api_response[i] = json_data;
+        }
     }
+    setTimeout(function() {
+        //console.log(node_status_buffer);
+        Asemble_Api_Resonse();
+        getNodes();
+        //console.log(node_status_buffer[1]);
+	}, 6000);
 }
 
 function infoPage(request, response) {
@@ -123,4 +131,4 @@ setTimeout(function() {
         //console.log(node_status_buffer);
         Asemble_Api_Resonse();
         //console.log(node_status_buffer[1]);
-	}, 1000);
+	}, 6000);
