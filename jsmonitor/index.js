@@ -52,7 +52,7 @@ function getNodeStats(url, num_of_node)
 		        }
 		        else {
 			        console.log("reading get_statistics from "+ url +" [\x1b[31mERROR\x1b[0m]");
-			    console.log(error);
+			    console.log("error");
                 }
 	        }).on("error", (err) => {
                 console.log("Error: " + err.message);
@@ -60,7 +60,7 @@ function getNodeStats(url, num_of_node)
 		}
 		else {
 			console.log("reading get_status from "+ url +" [\x1b[31mERROR\x1b[0m]");
-			console.log(error);
+			console.log("error");
         }
 	}).on("error", (err) => {
         console.log("Error: " + err.message);
