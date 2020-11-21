@@ -16,7 +16,11 @@ var api_response            = [];
 var nodesStat = 
 	[
 		["https://node.infinium.space/"],
-		["http://m2pool.eu:27855/"]
+        ["http://m2pool.eu:27855/"],
+        ["http://8.210.48.142:27855/"],
+        ["http://135.181.62.60:27855/"],
+        ["http://minerspool.sytes.net/"],
+        ["http://radioactive.myqnapcloud.com:27855/"]
     ];
 
 //////////////////////
