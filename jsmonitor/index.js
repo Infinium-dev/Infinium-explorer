@@ -15,11 +15,11 @@ var api_response            = [];
 
 var nodesStat = 
 	[
-		["https://node.infinium.space/"],
-        ["http://m2pool.eu:27855/"],
-        ["http://8.210.48.142:27855/"],
-        ["http://135.181.62.60:27855/"],
-        ["http://radioactive.myqnapcloud.com:27855/"]
+		["https://node.infinium.space"],
+        ["http://m2pool.eu:27855"],
+        ["http://8.210.48.142:27855"],
+        ["http://135.181.62.60:27855"],
+        ["http://radioactive.myqnapcloud.com:27855"]
     ];
 
 //////////////////////
@@ -93,6 +93,10 @@ function Asemble_Api_Resonse(){
                 height: node_status_buffer[i].top_block_height,
                 top_block_hash: node_status_buffer[i].top_block_hash,
                 start_time: node_statistics_buffer[i].start_time,
+                difficulty: node_status_buffer[i].top_block_difficulty,
+                incoming_connections_count: node_status_buffer[i].incoming_peer_count,
+                outgoing_connections_count: node_status_buffer[i].outgoing_peer_count,
+                last_known_block_index: node_status_buffer[i].top_known_block_height,
                 version: node_statistics_buffer[i].version
             });
             api_response[i] = json_data;
