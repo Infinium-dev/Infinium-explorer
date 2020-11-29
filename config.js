@@ -17,7 +17,6 @@ var nodesStat =
         [1],
         [2],
         [3],
-        [4],
-        [5]
+        [4]
     ];
 var nodejs_monitor_ip = "http://127.0.0.1:5003";
