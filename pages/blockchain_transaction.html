@@ -120,8 +120,8 @@
 
                 if (!details.payment_id){
                     //$('#div_transaction_paymentId').hide();
-                    document.getElementById("ransaction.paymentId").style = "color: #e0103d;";
-                    updateText('transaction.paymentId', "This transaction don't have payment ids");
+                    document.getElementById("transaction.paymentId").style = "color: #e0103d;";
+                    updateText('transaction.paymentId', "This transaction don't have payment id");
                 }else{
                     updateText('transaction.paymentId', details.payment_id);
                 }
