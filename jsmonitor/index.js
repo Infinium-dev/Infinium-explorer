@@ -16,7 +16,7 @@ var api_response            = [];
 var nodesStat = 
 	[
 		["https://node.infinium.space"],
-        ["http://m2pool.eu:27855"],
+        ["http://node2.infinium.space:27855"],
         ["http://8.210.48.142:27855"],
         ["http://135.181.62.60:27855"],
         ["http://212.130.81.11:27855"],
